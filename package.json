@@ -5,14 +5,25 @@
   "type": "module",
   "scripts": {
     "dev": "vp dev",
-    "build": "tsc && vp build",
+    "build": "vize check && vp build",
+    "typecheck": "vize check",
     "preview": "vp preview",
     "prepare": "vp config"
   },
+  "dependencies": {
+    "pinia": "^4.1.0",
+    "vue": "^3.5.45",
+    "vue-router": "^5.4.0"
+  },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "@vitejs/plugin-vue": "^6.0.10",
+    "oxlint-plugin-vize": "0.725.0",
+    "tailwindcss": "^4.3.5",
     "typescript": "~7.0.2",
     "vite": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "vize": "0.726.0"
   },
   "devEngines": {
     "packageManager": {
