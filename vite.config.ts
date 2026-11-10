@@ -1,4 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
+import { cloudflare } from "@cloudflare/vite-plugin";
 import vue from "@vitejs/plugin-vue";
 import { createVizeLintConfig } from "oxlint-plugin-vize";
 import { defineConfig } from "vite-plus";
@@ -10,7 +11,7 @@ const vizeLint = createVizeLintConfig({
 });
 
 export default defineConfig({
-  plugins: [vue(), tailwindcss()],
+  plugins: [vue(), tailwindcss(), cloudflare()],
   staged: {
     "*": "vp check --fix",
   },
