@@ -67,7 +67,7 @@ export const useTerminalStore = defineStore("terminal", () => {
     if (busy.value) return;
     busy.value = true;
     try {
-      while (queue.length) {
+      while (queue.length && !state.value.selectingTemplate) {
         const cmd = queue.shift()!;
         await exec(cmd);
         if (queue.length) await sleep(250);
@@ -87,8 +87,25 @@ export const useTerminalStore = defineStore("terminal", () => {
     void drain();
   }
 
+  async function selectTemplate(template: string) {
+    if (busy.value || !state.value.selectingTemplate) return;
+    busy.value = true;
+    try {
+      const r = run(state.value, template);
+      state.value = r.state;
+      for (const l of r.lines) {
+        if (l.delay) await sleep(l.delay);
+        push({ kind: l.tone === "hint" ? "note" : "out", text: l.text, tone: l.tone });
+      }
+    } finally {
+      busy.value = false;
+    }
+    if (!state.value.selectingTemplate) void drain();
+  }
+
   function interrupt() {
     queue = [];
+    if (state.value.selectingTemplate) state.value = { ...state.value, selectingTemplate: false };
     push({ kind: "cmd", text: "^C", cwd: prompt.value });
     if (state.value.devRunning) {
       state.value = { ...state.value, devRunning: false };
@@ -130,6 +147,7 @@ export const useTerminalStore = defineStore("terminal", () => {
     prompt,
     suggestions,
     send,
+    selectTemplate,
     interrupt,
     setCode,
     reset,

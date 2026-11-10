@@ -11,6 +11,7 @@ export type CodeVariant = "ok" | "typo" | "hi";
 export interface ShellState {
   cwd: "~" | "~/my-api";
   cloned: boolean;
+  selectingTemplate?: boolean;
   installed: boolean;
   devRunning: boolean;
   loggedIn: boolean;
@@ -123,6 +124,14 @@ export function isRunnable(code: string): boolean {
 /** 1行を実行する。`a && b` は前が成功したときだけ続ける */
 export function run(state: ShellState, input: string): RunResult {
   const line = input.trim();
+  if (state.selectingTemplate) {
+    if (line !== "cloudflare-workers")
+      return fail(state, [hint("この演習では cloudflare-workers を選んでください。")]);
+    return pass({ ...state, selectingTemplate: false, cloned: true }, [
+      out("✔ Which template do you want to use? cloudflare-workers", "ok"),
+      out("✔ Cloning the template", "ok", 400),
+    ]);
+  }
   if (!line || line.startsWith("#")) return { state, lines: [], ok: true };
   const parts = line.split("&&").map((p) => p.trim());
   let s = state;
@@ -363,12 +372,11 @@ function npm(s: ShellState, args: string[]): RunResult {
   if (sub === "-v" || sub === "--version") return pass(s, [out("10.9.0")]);
   if (sub === "create") {
     if (s.cloned) return fail(s, [out("error: Target directory my-api already exists.", "err")]);
-    return pass({ ...s, cloned: true }, [
+    return pass({ ...s, selectingTemplate: true }, [
       out("create-hono version 0.x"),
       out("✔ Using target directory … my-api", "ok", 300),
-      out("✔ Which template do you want to use? cloudflare-workers", "ok", 300),
-      out("✔ Cloning the template", "ok", 400),
-      hint("本物では質問に答えながら進みます。テンプレートは cloudflare-workers を選びます。"),
+      out("? Which template do you want to use?", "accent", 300),
+      hint("この演習では cloudflare-workers を選びます。"),
     ]);
   }
   if (!inProject(s)) return noPackageJson(s);

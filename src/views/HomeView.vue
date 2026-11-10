@@ -350,6 +350,46 @@ function confirmReset() {
       </p>
     </section>
 
+    <!-- 準備 -->
+    <section class="mt-24 rounded-3xl bg-amber-50/80 px-10 py-9">
+      <h2 class="flex items-center gap-3 text-lg font-bold text-amber-950">
+        <AppIcon name="terminal" :size="22" class="text-amber-700" />講座の前に準備しておくもの
+      </h2>
+      <ul class="mt-6 grid gap-3 md:grid-cols-2">
+        <li v-for="p in prep" :key="p.text">
+          <a
+            :href="p.href"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex h-full items-center gap-4 rounded-2xl bg-white/70 px-5 py-4 text-[15px] text-amber-950 transition hover:bg-white hover:shadow-[0_0_0_1px_var(--color-line)]"
+          >
+            <span class="flex -space-x-1.5">
+              <span
+                v-for="b in p.brands"
+                :key="b"
+                class="flex size-9 items-center justify-center rounded-xl bg-white shadow-[0_0_0_1px_var(--color-line)]"
+              >
+                <BrandIcon :name="b" :size="18" />
+              </span>
+              <span
+                v-if="!p.brands.length"
+                class="flex size-9 items-center justify-center rounded-xl bg-white text-amber-700 shadow-[0_0_0_1px_var(--color-line)]"
+              >
+                <AppIcon name="codeDoc" :size="18" />
+              </span>
+            </span>
+            <span class="flex-1">{{ p.text }}</span>
+            <AppIcon
+              name="external"
+              :size="16"
+              :stroke="2"
+              class="text-amber-700/50 transition group-hover:text-amber-700"
+            />
+          </a>
+        </li>
+      </ul>
+    </section>
+
     <!-- レッスン一覧 -->
     <section v-for="s in sessions" :key="s.id" class="mt-24">
       <div class="font-display text-xs font-bold tracking-[0.2em] text-brand-600">
@@ -395,46 +435,6 @@ function confirmReset() {
           </RouterLink>
         </li>
       </ol>
-    </section>
-
-    <!-- 準備 -->
-    <section class="mt-24 rounded-3xl bg-amber-50/80 px-10 py-9">
-      <h2 class="flex items-center gap-3 text-lg font-bold text-amber-950">
-        <AppIcon name="terminal" :size="22" class="text-amber-700" />講座の前に準備しておくもの
-      </h2>
-      <ul class="mt-6 grid gap-3 md:grid-cols-2">
-        <li v-for="p in prep" :key="p.text">
-          <a
-            :href="p.href"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="group flex h-full items-center gap-4 rounded-2xl bg-white/70 px-5 py-4 text-[15px] text-amber-950 transition hover:bg-white hover:shadow-[0_0_0_1px_var(--color-line)]"
-          >
-            <span class="flex -space-x-1.5">
-              <span
-                v-for="b in p.brands"
-                :key="b"
-                class="flex size-9 items-center justify-center rounded-xl bg-white shadow-[0_0_0_1px_var(--color-line)]"
-              >
-                <BrandIcon :name="b" :size="18" />
-              </span>
-              <span
-                v-if="!p.brands.length"
-                class="flex size-9 items-center justify-center rounded-xl bg-white text-amber-700 shadow-[0_0_0_1px_var(--color-line)]"
-              >
-                <AppIcon name="codeDoc" :size="18" />
-              </span>
-            </span>
-            <span class="flex-1">{{ p.text }}</span>
-            <AppIcon
-              name="external"
-              :size="16"
-              :stroke="2"
-              class="text-amber-700/50 transition group-hover:text-amber-700"
-            />
-          </a>
-        </li>
-      </ul>
     </section>
   </div>
 </template>

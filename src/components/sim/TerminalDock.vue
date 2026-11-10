@@ -175,8 +175,37 @@ const variants = Object.keys(codeLabels) as CodeVariant[];
             <span v-else :class="toneClass[l.tone ?? 'out']">{{ l.text || " " }}</span>
           </div>
 
+          <div
+            v-if="term.state.selectingTemplate"
+            class="my-2"
+            role="group"
+            aria-label="テンプレートを選択"
+          >
+            <button
+              type="button"
+              class="block rounded px-2 py-1 text-left text-cool hover:bg-white/10 focus-visible:bg-white/10"
+              :disabled="term.busy"
+              @click="term.selectTemplate('cloudflare-workers')"
+            >
+              ❯ cloudflare-workers
+            </button>
+            <span class="block px-2 text-white/40"> nodejs</span>
+            <span class="block px-2 text-white/40"> vercel</span>
+            <button
+              type="button"
+              class="block px-2 text-white/40 underline hover:text-white"
+              @click="term.interrupt()"
+            >
+              中止
+            </button>
+          </div>
+
           <!-- 入力行 -->
-          <form class="flex items-center" @submit.prevent="submit">
+          <form
+            v-if="!term.state.selectingTemplate"
+            class="flex items-center"
+            @submit.prevent="submit"
+          >
             <span class="text-cool">{{ term.prompt }}</span>
             <span class="text-signal">&nbsp;$&nbsp;</span>
             <input
@@ -205,7 +234,7 @@ const variants = Object.keys(codeLabels) as CodeVariant[];
             :key="c"
             type="button"
             class="max-w-full truncate rounded-lg bg-white/[0.06] px-2.5 py-1 font-mono text-[11.5px] text-white/75 ring-1 ring-white/10 transition hover:bg-white/[0.12] hover:text-white disabled:opacity-40"
-            :disabled="term.busy"
+            :disabled="term.busy || term.state.selectingTemplate"
             @click="term.send(c)"
           >
             {{ c }}

@@ -33,6 +33,15 @@ describe("tokenize", () => {
 });
 
 describe("手動デプロイの流れ", () => {
+  it("Hono の作成はテンプレート選択を待ち、選択後に作成する", () => {
+    const started = run(presets.fresh(), "npm create hono@latest my-api");
+    expect(started.state.cloned).toBe(false);
+    expect(started.state.selectingTemplate).toBe(true);
+    const selected = run(started.state, "cloudflare-workers");
+    expect(selected.state.cloned).toBe(true);
+    expect(selected.state.selectingTemplate).toBe(false);
+  });
+
   it("clone → cd → install → dev → curl でレスポンスが返る", () => {
     const r = runAll(ready(), "npm run dev", "curl http://localhost:8787/hello/taro");
     expect(r.ok).toBe(true);
