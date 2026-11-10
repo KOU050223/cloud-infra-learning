@@ -143,6 +143,43 @@ describe("git", () => {
   });
 });
 
+describe("後片付け", () => {
+  it("delete すると本番 URL から JSON が返らなくなる", () => {
+    const r = runAll(
+      presets.published(),
+      "npx wrangler delete",
+      `curl https://${PROD_HOST}/hello/taro`,
+    );
+    expect(r.ok).toBe(false);
+    expect(r.state.deployed).toBeNull();
+    expect(r.state.workerDeleted).toBe(true);
+    expect(r.text).toContain("削除済み");
+  });
+
+  it("削除済みの Worker をもう一度 delete すると not found", () => {
+    const r = runAll(presets.published(), "npx wrangler delete", "npx wrangler delete");
+    expect(r.ok).toBe(false);
+    expect(r.text).toContain("not found");
+  });
+
+  it("logout したら deploy できない", () => {
+    const r = runAll(presets.published(), "npx wrangler logout", "npm run deploy");
+    expect(r.ok).toBe(false);
+    expect(r.text).toContain("not authenticated");
+  });
+
+  it("delete のあとに deploy し直すと再び公開される", () => {
+    const r = runAll(
+      presets.published(),
+      "npx wrangler delete",
+      "npm run deploy",
+      `curl https://${PROD_HOST}/hello/taro`,
+    );
+    expect(r.ok).toBe(true);
+    expect(r.state.workerDeleted).toBe(false);
+  });
+});
+
 describe("補助", () => {
   it("isRunnable はシェルのコマンドだけを対象にする", () => {
     expect(isRunnable("git clone u my-api\ncd my-api\nnpm install")).toBe(true);
@@ -157,7 +194,8 @@ describe("補助", () => {
   });
 
   it("complete は候補が1つに絞れたときだけ補完する", () => {
-    expect(complete("npx wrangler lo")).toBe("npx wrangler login");
+    expect(complete("npx wrangler logi")).toBe("npx wrangler login");
+    expect(complete("npx wrangler lo")).toBeNull();
     expect(complete("npm run d")).toBeNull();
   });
 });

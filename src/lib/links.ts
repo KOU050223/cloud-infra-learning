@@ -13,12 +13,14 @@ export const links = {
   vscode: "https://code.visualstudio.com/",
 } as const;
 
-export type RepoPage = "secrets" | "newSecret" | "actions";
+export type RepoPage = "secrets" | "newSecret" | "actions" | "workflow" | "settings";
 
 const repoPaths: Record<RepoPage, string> = {
   secrets: "settings/secrets/actions",
   newSecret: "settings/secrets/actions/new",
   actions: "actions",
+  workflow: "actions/workflows/deploy.yml",
+  settings: "settings",
 };
 
 const NAME = /^[A-Za-z0-9_.-]+$/;

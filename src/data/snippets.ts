@@ -48,6 +48,11 @@ export const wranglerTail = `npx wrangler tail`;
 
 export const whoami = `npx wrangler whoami`;
 
+/** 後片付け（L13） */
+export const wranglerDelete = `npx wrangler delete`;
+
+export const wranglerLogout = `npx wrangler logout`;
+
 /** build：型チェック（tsc）と、公開用にまとめられるかの確認（--dry-run なので公開はしない） */
 export const packageScripts = `"scripts": {
   "dev": "wrangler dev",

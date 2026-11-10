@@ -53,6 +53,7 @@ const remaining = () => allLessons.filter((l) => !progress.isCompleted(l.id));
           <li>
             CI と CD の違い、チェックに失敗したらデプロイを止める理由と、build で止められない不具合
           </li>
+          <li>使い終わったリソースと鍵を、自分で漏れなく片付ける手順</li>
         </ul>
       </div>
     </template>

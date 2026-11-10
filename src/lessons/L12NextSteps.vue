@@ -110,7 +110,7 @@ const topics: { icon: IconName; name: string; desc: string; brands: BrandName[] 
     </li>
   </ol>
 
-  <CalloutBox tone="tip" title="最後に">
-    下のボタンでこのレッスンを完了すると、修了画面に進みます。
+  <CalloutBox tone="warn" title="まだ終わりではありません">
+    最後に、講座で作った Cloudflare のリソースを片付けます。次のレッスンに進みましょう。
   </CalloutBox>
 </template>

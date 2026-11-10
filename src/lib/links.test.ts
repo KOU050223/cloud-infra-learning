@@ -29,5 +29,8 @@ describe("repoUrl", () => {
       "https://github.com/taro/my-api/settings/secrets/actions/new",
     );
     expect(repoUrl("taro/my-api", "actions")).toBe("https://github.com/taro/my-api/actions");
+    expect(repoUrl("taro/my-api", "workflow")).toBe(
+      "https://github.com/taro/my-api/actions/workflows/deploy.yml",
+    );
   });
 });

@@ -17,6 +17,8 @@ export interface ShellState {
   loggedIn: boolean;
   /** 公開中のコード（未公開なら null） */
   deployed: CodeVariant | null;
+  /** wrangler delete で Worker を削除したか（L13 の後片付け） */
+  workerDeleted?: boolean;
   code: CodeVariant;
   /** コミットしていない変更があるか */
   dirty: boolean;
@@ -228,6 +230,7 @@ function helpLines(): OutLine[] {
     out("  git clone <URL> / git status / git add . / git commit -m … / git push"),
     out("  npm install / npm run dev / npm run build / npm run deploy"),
     out("  npx wrangler login / whoami / deploy / tail / secret put <名前>"),
+    out("  npx wrangler delete / logout（後片付け）"),
     out("  curl http://localhost:8787/… / curl https://" + PROD_HOST + "/…"),
     out("  cd / ls / cat / pwd / clear"),
     hint("↑↓ で履歴、Tab で補完。右上で src/index.ts の中身を切り替えられます。"),
@@ -497,7 +500,7 @@ function deploy(s: ShellState, head: OutLine[]): RunResult {
       out("✘ [ERROR] You are not authenticated. Please run `wrangler login`.", "err", 400),
       hint("先に npx wrangler login で Cloudflare にログインします。"),
     ]);
-  return pass({ ...s, deployed: s.code }, [
+  return pass({ ...s, deployed: s.code, workerDeleted: false }, [
     ...head,
     out(WRANGLER, "accent", 300),
     out(RULE, "muted"),
@@ -590,6 +593,39 @@ function wrangler(s: ShellState, args: string[]): RunResult {
       hint("本物では値の入力を求められます。入力した値は画面にも履歴にも残りません。"),
     ]);
   }
+  if (sub === "delete") {
+    if (!s.loggedIn) return deploy(s, []);
+    if (!s.deployed)
+      return fail(s, [
+        out(WRANGLER, "accent"),
+        out(RULE, "muted"),
+        out(`✘ [ERROR] Worker "${PROJECT}" not found.`, "err", 400),
+        hint(
+          s.workerDeleted
+            ? "Worker はすでに削除されています。"
+            : "まだ公開していないので、削除するものはありません。",
+        ),
+      ]);
+    return pass({ ...s, deployed: null, workerDeleted: true }, [
+      out(WRANGLER, "accent"),
+      out(RULE, "muted"),
+      out(
+        `? Are you sure you want to delete ${PROJECT}? This action cannot be undone. › y`,
+        "warn",
+      ),
+      hint("本物では確認を求められるので、Worker の名前を確かめてから y を入力します。"),
+      out(`Successfully deleted ${PROJECT}`, "ok", 900),
+    ]);
+  }
+  if (sub === "logout") {
+    if (!s.loggedIn)
+      return pass(s, [out(WRANGLER, "accent"), out("Not logged in, exiting...", "muted")]);
+    return pass({ ...s, loggedIn: false }, [
+      out(WRANGLER, "accent"),
+      out(RULE, "muted"),
+      out("Successfully logged out.", "ok", 400),
+    ]);
+  }
   return fail(s, [out(`✘ [ERROR] Unknown argument: ${sub ?? ""}`, "err")]);
 }
 
@@ -628,7 +664,9 @@ function curl(s: ShellState, args: string[]): RunResult {
     if (!s.deployed)
       return fail(s, [
         hint(
-          "（シミュレーター）この URL にはまだ何も公開されていません。npm run deploy で公開しましょう。",
+          s.workerDeleted
+            ? "（シミュレーター）この URL の Worker は削除済みなので、JSON は返りません。本物では Cloudflare のエラーページが返ります。"
+            : "（シミュレーター）この URL にはまだ何も公開されていません。npm run deploy で公開しましょう。",
         ),
       ]);
     return pass(s, respond(s.deployed, method, path, showHead, "HTTP/2"));
@@ -722,6 +760,8 @@ export const completions = [
   "npx wrangler whoami",
   "npx wrangler tail",
   "npx wrangler secret put ",
+  "npx wrangler delete",
+  "npx wrangler logout",
   "curl http://localhost:8787/",
   `curl https://${PROD_HOST}/`,
   "cd my-api",
