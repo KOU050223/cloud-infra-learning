@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import MangaPanel from "../components/ui/MangaPanel.vue";
+import SideNote from "../components/ui/SideNote.vue";
+import { links } from "../lib/links";
+import DashLink from "../components/ui/DashLink.vue";
 import CalloutBox from "../components/ui/CalloutBox.vue";
 import CheckItem from "../components/ui/CheckItem.vue";
 import CodeBlock from "../components/ui/CodeBlock.vue";
@@ -15,6 +19,12 @@ const progress = useProgressStore();
     いよいよ自分の PC で手を動かします。ゴールは
     <strong>公開 URL にアクセスして、自分の API からレスポンスが返ってくること</strong>です。
   </p>
+
+  <CalloutBox tone="tip" title="本番の前に、サイトの中で試せます">
+    右下の<strong>ターミナル</strong>はシミュレーターです。コマンドの枠にある「試す」を押すと、そのコマンドを実行したらどうなるかを見られます。
+    順番を飛ばしたときのエラー（install 前に dev、ログイン前に deploy
+    など）も再現されるので、本物で詰まる前に一度通しで試しておきましょう。
+  </CalloutBox>
 
   <h2>使うプロジェクトを選ぶ</h2>
   <ProjectModeSwitch />
@@ -55,7 +65,14 @@ const progress = useProgressStore();
     why="公開する前に、手元で正しく動くことを確認するため。"
   >
     <CodeBlock :code="s.devCommand" />
-    <p>別のターミナルを開くか、ブラウザで次の URL にアクセスします。</p>
+    <p>
+      別のターミナルを開いて次のコマンドを実行するか、ブラウザで同じ URL を開きます。<SideNote
+        title="なぜ別のターミナル？"
+        ><code>npm run dev</code>
+        は止めるまでサーバーとして動き続け、そのターミナルは入力を受け付けません。新しいタブかウィンドウでターミナルを開き、同じフォルダで実行します。サーバーを止めるときは
+        <code>Ctrl+C</code> です。</SideNote
+      >
+    </p>
     <CodeBlock :code="s.curlLocal" />
     <template #expected>
       <CodeBlock :code="s.helloResponse" title="レスポンス" />
@@ -92,6 +109,55 @@ const progress = useProgressStore();
 
   <HandsonStep
     :step="4"
+    title="Cloudflare アカウントを作る"
+    why="API の公開先になる、自分の Cloudflare アカウントが必要なため。"
+  >
+    <p>
+      すでにアカウントを持っている人は、ログインできることだけ確かめて次へ進みましょう。
+      無料プランで十分です。
+    </p>
+    <ol>
+      <li>
+        登録ページを開き、メールアドレスとパスワードを入力して登録する
+        <DashLink brand="cloudflare" :href="links.cfSignUp" :path="['Cloudflare', 'Sign up']" />
+      </li>
+      <li>届いた確認メールのリンクを開いて、メールアドレスを認証する</li>
+      <li>
+        ダッシュボードの
+        <strong>Workers &amp; Pages</strong>
+        を一度開く。サイト（ドメイン）の追加を勧められても、今回は不要なのでスキップしてかまいません
+        <DashLink brand="cloudflare" :href="links.cfWorkers" :path="['Workers & Pages']" />
+      </li>
+      <li>
+        <strong>workers.dev のサブドメイン</strong>を確認する。公開 URL の
+        <code>https://my-api.<strong>サブドメイン</strong>.workers.dev</code>
+        の部分になります。登録を求められたら、好きな名前（英小文字・数字・ハイフン）で登録します
+      </li>
+    </ol>
+    <CalloutBox tone="info" title="サブドメインは全世界で1つだけ">
+      ほかの人が使っている名前は登録できません。名前は公開 URL
+      に出るので、本名や個人情報は避けておくと安心です。
+    </CalloutBox>
+    <template #errors>
+      <ul>
+        <li>
+          確認メールが届かない →
+          迷惑メールフォルダを確認する。それでもなければダッシュボードから再送する
+        </li>
+        <li>
+          すでに登録済みのメールアドレスと言われた →
+          過去に作ったアカウントがあるので、パスワードを再設定してログインする
+        </li>
+      </ul>
+    </template>
+    <template #check>
+      <CheckItem id="h05-account" label="Cloudflare アカウントを作り、メールアドレスを認証した" />
+      <CheckItem id="h05-subdomain" label="自分の workers.dev サブドメインを確認した" />
+    </template>
+  </HandsonStep>
+
+  <HandsonStep
+    :step="5"
     title="Cloudflare にログインする"
     why="どのアカウントに公開するかを Wrangler に教えるため。"
   >
@@ -108,6 +174,7 @@ const progress = useProgressStore();
         <li>
           workers.dev のサブドメインが未設定と言われた → ダッシュボードの「Workers &
           Pages」を一度開いて登録する
+          <DashLink brand="cloudflare" :href="links.cfWorkers" :path="['Workers & Pages']" />
         </li>
       </ul>
     </template>
@@ -117,7 +184,7 @@ const progress = useProgressStore();
   </HandsonStep>
 
   <HandsonStep
-    :step="5"
+    :step="6"
     title="公開する"
     why="ここで初めて、インターネット上の誰からでもアクセスできるようになる。"
   >
@@ -144,7 +211,7 @@ Deployed taro-hello-api triggers
   </HandsonStep>
 
   <HandsonStep
-    :step="6"
+    :step="7"
     title="公開URLで疎通確認"
     why="本当に外から使えるかを、自分の目で確かめるため。"
   >
@@ -155,6 +222,8 @@ Deployed taro-hello-api triggers
       <CheckItem id="h05-friend" label="自分以外の端末からもアクセスできた" />
     </template>
   </HandsonStep>
+
+  <MangaPanel id="m05" />
 
   <CalloutBox tone="tip" title="第1回の成果物">
     公開URLからレスポンスが取得できる Hono API ができました！ URL をメモしておきましょう。

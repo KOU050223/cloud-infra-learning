@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import PrereqBox from "../components/ui/PrereqBox.vue";
+import Term from "../components/ui/Term.vue";
+import DashLink from "../components/ui/DashLink.vue";
+import AppIcon from "../components/icons/AppIcon.vue";
 import { computed, ref } from "vue";
 import CalloutBox from "../components/ui/CalloutBox.vue";
 import CodeBlock from "../components/ui/CodeBlock.vue";
@@ -50,6 +54,21 @@ const lines = workflowCdOnly.split("\n");
   </p>
 
   <h2>ワークフローを読んでみよう</h2>
+  <PrereqBox title="YAML の読み方">
+    <p>ワークフローは YAML という形式で書きます。読むときに押さえるのは次の3つだけです。</p>
+    <ul>
+      <li><code>名前: 値</code> で1つの設定を表す（例：<code>runs-on: ubuntu-latest</code>）</li>
+      <li>
+        字下げ（スペース2つ）が「中に入っている」ことを表す。<code>jobs:</code>
+        の下で字下げされた行は、すべて jobs の中身
+      </li>
+      <li>
+        行頭の <code>- </code> は並びの1項目を表す。<code>steps:</code> の下の
+        <code>- </code> が、上から順に実行される手順
+      </li>
+    </ul>
+    <p>タブ文字は使えず、字下げがずれるとワークフローが読み込めなくなります。</p>
+  </PrereqBox>
   <p>用語をクリックすると、YAML の該当部分が光ります。</p>
 
   <div class="not-prose my-6 grid grid-cols-[200px_1fr] gap-4">
@@ -83,15 +102,22 @@ const lines = workflowCdOnly.split("\n");
   <h2>成功と失敗</h2>
   <p>
     Step のどれかが失敗（終了コードが 0 以外）すると、その Job は失敗し、以降の Step
-    は実行されません。 結果はリポジトリの <strong>Actions タブ</strong>に ✅ / ❌
+    は実行されません。 結果はリポジトリの <strong>Actions タブ</strong>に 成功
+    <AppIcon name="checkCircle" :size="18" class="inline align-[-0.25em] text-emerald-600" /> / 失敗
+    <AppIcon name="crossCircle" :size="18" class="inline align-[-0.25em] text-rose-600" />
     で表示され、ログも見られます。
   </p>
 
   <CalloutBox tone="warn" title="Secrets はどこに置く？">
-    Cloudflare の API トークンは、GitHub リポジトリの
+    Cloudflare の <Term id="apiToken">API トークン</Term>は、GitHub リポジトリの
     <strong>Settings → Secrets and variables → Actions</strong>
     に登録します。ログに表示されても自動で <code>***</code> に伏せられます。YAML
     に直接書いてはいけません。
+    <DashLink
+      brand="github"
+      repo-page="secrets"
+      :path="['Settings', 'Secrets and variables', 'Actions']"
+    />
   </CalloutBox>
 
   <CodeBlock :code="workflowCdOnly" title=".github/workflows/deploy.yml" />

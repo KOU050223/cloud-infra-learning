@@ -11,6 +11,7 @@ export const router = createRouter({
       component: () => import("./views/LessonView.vue"),
       beforeEnter: (to) => (findLesson(String(to.params.id)) ? true : { name: "home" }),
     },
+    { path: "/glossary", name: "glossary", component: () => import("./views/GlossaryView.vue") },
     { path: "/complete", name: "complete", component: () => import("./views/CompleteView.vue") },
     { path: "/:pathMatch(.*)*", redirect: "/" },
   ],

@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import MangaPanel from "../components/ui/MangaPanel.vue";
+import SideNote from "../components/ui/SideNote.vue";
+import Term from "../components/ui/Term.vue";
+import { links } from "../lib/links";
+import DashLink from "../components/ui/DashLink.vue";
+import AppIcon from "../components/icons/AppIcon.vue";
 import CalloutBox from "../components/ui/CalloutBox.vue";
 import CodeBlock from "../components/ui/CodeBlock.vue";
 import QuizCard from "../components/ui/QuizCard.vue";
@@ -8,9 +14,13 @@ import * as s from "../data/snippets";
 <template>
   <p>公開できたら終わり、ではありません。公開した瞬間から「動かし続ける」責任が生まれます。</p>
 
-  <h2>💸 お金：無料枠とクラウド破産</h2>
+  <h2 class="flex items-center gap-3">
+    <AppIcon name="coin" :size="26" class="text-brand-500" />お金：無料枠とクラウド破産
+  </h2>
+  <MangaPanel id="m06" />
   <p>
-    クラウドの多くは<strong>使った分だけ払う従量課金</strong>です。設定ミスや攻撃でアクセスが急増すると、
+    クラウドの多くは<strong>使った分だけ払う<Term id="payg">従量課金</Term></strong
+    >です。設定ミスや攻撃でアクセスが急増すると、
     気づいたときには高額請求……ということが実際に起きています（いわゆる「クラウド破産」）。
   </p>
   <ul>
@@ -23,23 +33,39 @@ import * as s from "../data/snippets";
     <li>使わなくなったリソースは削除する。「動かしっぱなし」が一番もったいない</li>
   </ul>
 
-  <h2>🔑 Secret：秘密の値をコードに書かない</h2>
+  <h2 class="flex items-center gap-3">
+    <AppIcon name="key" :size="26" class="text-brand-500" />Secret：秘密の値をコードに書かない
+  </h2>
   <p>
     外部 API のキーなどをコードに直接書いて GitHub に push すると、世界中に公開されてしまいます。
-    Workers では Secret として登録し、コードからは環境変数として読み出します。
+    Workers では Secret として登録し、コードからは<Term id="env">環境変数</Term
+    >として読み出します。<SideNote title="コードから読む例"
+      >Hono では <code>c.env.API_KEY</code> で読み出せます。<code>npm run dev</code> のときは
+      <code>.dev.vars</code> の値が、本番では
+      <code>secret put</code> した値が入ります。型チェックを通すには
+      <code>new Hono&lt;{ Bindings: { API_KEY: string } }&gt;()</code> と型を書きます。</SideNote
+    >
   </p>
   <CodeBlock :code="s.secretPut" />
   <p>
     ローカル開発用の値は <code>.dev.vars</code> に書き、<code>.gitignore</code> に入れておきます。
   </p>
 
-  <h2>📜 ログ：何が起きているかを見る</h2>
+  <h2 class="flex items-center gap-3">
+    <AppIcon name="terminal" :size="26" class="text-brand-500" />ログ：何が起きているかを見る
+  </h2>
   <p>本番でエラーが起きても、ユーザーの画面は見られません。ログが唯一の手がかりです。</p>
   <CodeBlock :code="s.wranglerTail" />
   <p>
     リアルタイムでリクエストとエラーが流れてきます。<code>observability</code> を有効にしておけば、
     Cloudflare ダッシュボードから過去のログも検索できます。
   </p>
+  <DashLink
+    brand="cloudflare"
+    :href="links.cfWorkers"
+    :path="['Workers & Pages', '自分の Worker', 'Logs']"
+    note="一覧から自分の Worker を選び、Logs タブを開く"
+  />
 
   <QuizCard
     question="外部APIのキーを使う処理を書いた。キーの扱いとして正しいのは？"
@@ -70,7 +96,9 @@ import * as s from "../data/snippets";
   </ul>
 
   <CalloutBox tone="info" title="次回予告">
-    コードを直すたびに手で <code>npm run deploy</code> するのは面倒だし、うっかりも起きます。
-    第2回では、push するだけでテストとデプロイが自動で走る仕組み（CI/CD）を作ります。
+    部の HP が公開されました。次は新歓に向けて、かに子が HP の更新を任されることになります。
+    でも、更新のたびに手で
+    <code>npm run deploy</code> していると、公開し忘れや、壊れたままの公開が起きます。
+    第2回では、push するだけでチェックとデプロイが自動で走る仕組み（CI/CD）を作ります。
   </CalloutBox>
 </template>

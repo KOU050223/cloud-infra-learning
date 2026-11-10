@@ -48,6 +48,19 @@ export const wranglerTail = `npx wrangler tail`;
 
 export const whoami = `npx wrangler whoami`;
 
+/** build：型チェック（tsc）と、公開用にまとめられるかの確認（--dry-run なので公開はしない） */
+export const packageScripts = `"scripts": {
+  "dev": "wrangler dev",
+  "deploy": "wrangler deploy --minify",
+  "build": "tsc --noEmit && wrangler deploy --dry-run --outdir dist"
+}`;
+
+export const typescriptInstall = `npm install -D typescript`;
+
+export const buildCommand = `npm run build`;
+
+// --- 発展：テスト ---
+
 export const vitestInstall = `npm install -D vitest`;
 
 export const honoTest = `import { describe, expect, it } from "vitest";
@@ -66,11 +79,10 @@ describe("API", () => {
   });
 });`;
 
-export const packageScripts = `"scripts": {
-  "dev": "wrangler dev",
-  "deploy": "wrangler deploy --minify",
-  "test": "vitest run"
-}`;
+export const testScript = `"test": "vitest run"`;
+
+export const workflowTestStep = `      - run: npm run build
+      - run: npm test        # 追加：動作が仕様どおりかも確かめる`;
 
 export const workflowCdOnly = `name: Deploy
 
@@ -101,7 +113,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -110,10 +122,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm test
+      - run: npm run build
 
   deploy:
-    needs: test                          # test が成功したときだけ動く
+    needs: build                         # build が成功したときだけ動く
     if: github.event_name == 'push'      # PR では公開しない
     runs-on: ubuntu-latest
     steps:
@@ -134,6 +146,23 @@ git push origin main`;
 
 export const helloResponse = `{"message":"Hello, taro!"}`;
 
+export const buildFailureLog = `> tsc --noEmit && wrangler deploy --dry-run --outdir dist
+
+src/index.ts(6,34): error TS2551: Property 'jsn' does not exist on type 'Context<BlankEnv, "/hello/:name", BlankInput>'. Did you mean 'json'?
+Error: Process completed with exit code 1.`;
+
+export const breakCode = `// src/index.ts（わざと壊す：json を jsn と打ち間違える）
+app.get("/hello/:name", (c) => c.jsn({ message: \`Hello, \${c.req.param("name")}!\` }));`;
+
+export const breakPush = `git commit -am "change: /hello を修正（打ち間違いあり）"
+git push origin main`;
+
+export const fixPush = `git commit -am "fix: jsn を json に直す"
+git push origin main`;
+
+export const wrongCode = `// src/index.ts（型は正しいが、仕様と違う）
+app.get("/hello/:name", (c) => c.json({ message: \`Hi, \${c.req.param("name")}!\` }));`;
+
 export const testFailureLog = `- Expected
 + Received
 
@@ -141,12 +170,3 @@ export const testFailureLog = `- Expected
 -   "message": "Hello, taro!",
 +   "message": "Hi, taro!",
   }`;
-
-export const breakCode = `// src/index.ts（わざと壊す）
-app.get("/hello/:name", (c) => c.json({ message: \`Hi, \${c.req.param("name")}!\` }));`;
-
-export const breakPush = `git commit -am "change: あいさつを変更"
-git push origin main`;
-
-export const fixPush = `git commit -am "fix: あいさつを元に戻す"
-git push origin main`;

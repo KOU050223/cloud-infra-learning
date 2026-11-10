@@ -17,6 +17,8 @@ describe("parseProgress", () => {
       checks: { "h05-local": true },
       lastLessonId: "03",
       projectMode: "own",
+      githubRepo: "taro/my-api",
+      slideMode: true,
     };
     expect(parseProgress(JSON.stringify(saved))).toEqual(saved);
   });
@@ -28,6 +30,7 @@ describe("parseProgress", () => {
         checks: { a: true, b: "yes" },
         lastLessonId: 5,
         projectMode: "other",
+        githubRepo: "not a repo",
       }),
     );
     expect(r).toEqual({
@@ -35,6 +38,15 @@ describe("parseProgress", () => {
       checks: { a: true },
       lastLessonId: null,
       projectMode: "template",
+      githubRepo: null,
+      slideMode: false,
     });
+  });
+
+  it("リポジトリは URL で保存されていても owner/repo に直す", () => {
+    expect(
+      parseProgress(JSON.stringify({ githubRepo: "https://github.com/taro/my-api.git" }))
+        .githubRepo,
+    ).toBe("taro/my-api");
   });
 });

@@ -1,25 +1,24 @@
 <script setup lang="ts">
+import MangaPanel from "../components/ui/MangaPanel.vue";
 import CalloutBox from "../components/ui/CalloutBox.vue";
 import QuizCard from "../components/ui/QuizCard.vue";
 </script>
 
 <template>
-  <p>
-    Hono で API を作り、<code>npm run dev</code> を実行して
-    <code>http://localhost:8787</code> を開いたら JSON が返ってきた。では、この URL
-    を友だちに送ったら、友だちのスマホでも同じ結果が見られるでしょうか？
-  </p>
+  <MangaPanel id="m01" />
+
+  <p>なぜ先輩のスマホでは開けなかったのでしょうか。まず予想してみましょう。</p>
 
   <QuizCard
-    question="友だちが自分のスマホで http://localhost:8787 を開くと、どうなる？"
+    question="リタ猫先輩が自分のスマホで http://localhost:8787 を開くと、どうなる？"
     :options="[
       {
         label: 'あなたのPCで動いているAPIの結果が見られる',
         explain:
-          'localhost は「今アクセスしている端末自身」を指す特別な名前です。友だちのスマホからだと、友だちのスマホ自身を探しに行きます。',
+          'localhost は「今アクセスしている端末自身」を指す特別な名前です。リタ猫先輩のスマホからだと、リタ猫先輩のスマホ自身を探しに行きます。',
       },
       {
-        label: '友だちのスマホ自身にアクセスしようとして、つながらない',
+        label: 'リタ猫先輩のスマホ自身にアクセスしようとして、つながらない',
         correct: true,
         explain: 'localhost は常に「自分自身」。あなたのAPIはあなたのPCの中でしか見えていません。',
       },

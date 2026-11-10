@@ -1,29 +1,45 @@
 <script setup lang="ts">
+import MangaPanel from "../components/ui/MangaPanel.vue";
+import AppIcon from "../components/icons/AppIcon.vue";
+import BrandIcon from "../components/icons/BrandIcon.vue";
+import type { BrandName } from "../components/icons/brands";
+import type { IconName } from "../components/icons/icons";
 import CalloutBox from "../components/ui/CalloutBox.vue";
 
-const topics = [
+const topics: { icon: IconName; name: string; desc: string; brands: BrandName[] }[] = [
   {
-    icon: "👀",
+    icon: "flask",
+    brands: ["vitest"],
+    name: "自動テスト",
+    desc: "build では止められない「動作の不具合」を、期待する結果を書いたテストで止める。L10 の発展パートが入り口。",
+  },
+  {
+    icon: "eye",
+    brands: ["vercel", "cloudflare"],
     name: "Preview デプロイ",
     desc: "Pull Request ごとに確認用の URL を自動で発行し、マージ前に動作を見られる。Vercel や Workers の Preview URL など。",
   },
   {
-    icon: "📝",
+    icon: "codeDoc",
+    brands: ["terraform"],
     name: "IaC（Infrastructure as Code）",
     desc: "インフラの構成をコードで管理する。Terraform など。誰が作っても同じ環境になり、変更履歴も残る。",
   },
   {
-    icon: "🤖",
+    icon: "robot",
+    brands: ["githubactions"],
     name: "自動レビュー",
     desc: "Lint・型チェック・AI レビューを CI に組み込み、レビューの負担を減らす。",
   },
   {
-    icon: "📈",
+    icon: "chart",
+    brands: ["sentry", "grafana"],
     name: "監視",
     desc: "エラー率・レスポンス時間を可視化し、異常があれば通知する。Sentry、Grafana など。",
   },
   {
-    icon: "🛠️",
+    icon: "pulse",
+    brands: [],
     name: "SRE",
     desc: "信頼性をエンジニアリングで高める考え方。SLO（目標とする信頼性）を決め、障害から学び、運用作業を自動化する。",
   },
@@ -31,22 +47,44 @@ const topics = [
 </script>
 
 <template>
+  <MangaPanel id="m12" />
+
   <p>
     お疲れさまでした！
     最後に、この先の学びにつながる分野を紹介します。今日の講座は、どれも入り口に立ったところです。
   </p>
 
-  <div class="not-prose my-6 grid grid-cols-2 gap-3">
-    <div v-for="t in topics" :key="t.name" class="rounded-xl border border-slate-200 bg-white p-4">
-      <div class="font-bold text-slate-900">{{ t.icon }} {{ t.name }}</div>
-      <p class="mt-1 text-sm text-slate-600">{{ t.desc }}</p>
+  <div class="not-prose my-12 grid gap-4 md:grid-cols-2">
+    <div
+      v-for="t in topics"
+      :key="t.name"
+      class="rounded-3xl bg-white p-7 shadow-[0_0_0_1px_var(--color-line)]"
+    >
+      <div class="flex items-center gap-3 text-[16px] font-bold">
+        <span
+          class="flex size-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600"
+        >
+          <AppIcon :name="t.icon" :size="20" />
+        </span>
+        {{ t.name }}
+        <span class="ml-auto flex gap-1.5">
+          <span
+            v-for="b in t.brands"
+            :key="b"
+            class="flex size-8 items-center justify-center rounded-lg bg-ink/[0.04]"
+          >
+            <BrandIcon :name="b" :size="16" />
+          </span>
+        </span>
+      </div>
+      <p class="mt-4 text-[15px] leading-[1.9] text-ink/65">{{ t.desc }}</p>
     </div>
   </div>
 
   <h2>おすすめの学び方</h2>
   <ul>
     <li>
-      YouTube：<a
+      <BrandIcon name="youtube" :size="18" class="mr-1.5 inline align-[-0.2em]" />YouTube：<a
         href="https://www.youtube.com/@engineer_ryoma"
         target="_blank"
         rel="noopener noreferrer"

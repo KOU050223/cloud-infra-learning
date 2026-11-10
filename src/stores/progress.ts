@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
 import { allLessons } from "../data/course";
 import { emptyProgress, loadProgress, saveProgress, type ProjectMode } from "../lib/storage";
@@ -9,6 +9,8 @@ export const useProgressStore = defineStore("progress", () => {
   const checks = ref<Record<string, boolean>>(initial.checks);
   const lastLessonId = ref<string | null>(initial.lastLessonId);
   const projectMode = ref<ProjectMode>(initial.projectMode);
+  const githubRepo = ref<string | null>(initial.githubRepo);
+  const slideMode = ref(initial.slideMode);
 
   const completedCount = computed(
     () => allLessons.filter((l) => completed.value.includes(l.id)).length,
@@ -35,22 +37,31 @@ export const useProgressStore = defineStore("progress", () => {
   function setProjectMode(mode: ProjectMode) {
     projectMode.value = mode;
   }
+  function setGithubRepo(repo: string | null) {
+    githubRepo.value = repo;
+  }
+  function setSlideMode(on: boolean) {
+    slideMode.value = on;
+  }
   function reset() {
     const e = emptyProgress();
     completed.value = e.completed;
     checks.value = e.checks;
     lastLessonId.value = e.lastLessonId;
     projectMode.value = e.projectMode;
+    githubRepo.value = e.githubRepo;
   }
 
   watch(
-    [completed, checks, lastLessonId, projectMode],
+    [completed, checks, lastLessonId, projectMode, githubRepo, slideMode],
     () =>
       saveProgress({
         completed: completed.value,
         checks: checks.value,
         lastLessonId: lastLessonId.value,
         projectMode: projectMode.value,
+        githubRepo: githubRepo.value,
+        slideMode: slideMode.value,
       }),
     { deep: true },
   );
@@ -60,6 +71,8 @@ export const useProgressStore = defineStore("progress", () => {
     checks,
     lastLessonId,
     projectMode,
+    githubRepo,
+    slideMode,
     completedCount,
     percent,
     allDone,
@@ -69,6 +82,13 @@ export const useProgressStore = defineStore("progress", () => {
     isChecked,
     setChecked,
     setProjectMode,
+    setGithubRepo,
+    setSlideMode,
     reset,
   };
 });
+
+// 開発中にストアを書き換えても、開いているページのストアを差し替える
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useProgressStore, import.meta.hot));
+}

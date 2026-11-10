@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import MangaPanel from "../components/ui/MangaPanel.vue";
+import Term from "../components/ui/Term.vue";
 import RequestJourney from "../components/sim/RequestJourney.vue";
 import QuizCard from "../components/ui/QuizCard.vue";
 </script>
@@ -11,11 +13,15 @@ import QuizCard from "../components/ui/QuizCard.vue";
     のパスを書き換えると、結果も変わります。
   </p>
 
+  <MangaPanel id="m02" />
+
   <RequestJourney />
 
   <h2>ポイント</h2>
   <ul>
-    <li><strong>DNS</strong>：ドメイン名を IP アドレスに変換する「電話帳」</li>
+    <li>
+      <strong>DNS</strong>：ドメイン名を <Term id="ip">IP アドレス</Term> に変換する「電話帳」
+    </li>
     <li><strong>HTTPS</strong>：通信を暗号化した HTTP。今の Web では必須</li>
     <li>
       <strong>エッジ</strong>：ユーザーの近くにあるサーバー。Cloudflare Workers

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import MangaPanel from "../components/ui/MangaPanel.vue";
+import AppIcon from "../components/icons/AppIcon.vue";
 import { ref } from "vue";
 import CalloutBox from "../components/ui/CalloutBox.vue";
 
@@ -14,9 +16,10 @@ const stories = [
     lesson: "手順と権限が仕組みに入っていれば、誰でも同じ手順で出せる",
   },
   {
-    title: "テスト漏れ",
-    story: "急いでいたのでテストを実行せずに deploy。小さな修正のはずが、別の API を壊していた。",
-    lesson: "テストに通らない限り公開されない仕組みにすれば、人間のうっかりを止められる",
+    title: "確認漏れ",
+    story:
+      "急いでいたので手元で動かさずに deploy。小さな修正のはずが、打ち間違いで API が 500 エラーに。",
+    lesson: "チェックに通らない限り公開されない仕組みにすれば、人間のうっかりを止められる",
   },
   {
     title: "環境の違い",
@@ -34,6 +37,8 @@ function toggle(i: number) {
 </script>
 
 <template>
+  <MangaPanel id="m07" />
+
   <p>
     第1回では
     <code>npm run deploy</code>
@@ -41,24 +46,38 @@ function toggle(i: number) {
     でも、チームで開発して何度も更新していくと……？ よくある失敗談を見てみましょう。
   </p>
 
-  <div class="not-prose my-6 grid grid-cols-2 gap-3">
+  <div class="not-prose my-12 grid gap-4 md:grid-cols-2">
     <button
       v-for="(st, i) in stories"
       :key="st.title"
       type="button"
-      class="rounded-xl border bg-white p-4 text-left text-sm transition hover:border-brand-500"
-      :class="opened.has(i) ? 'border-brand-500' : 'border-slate-200'"
+      class="group flex flex-col rounded-3xl border-2 bg-white p-7 text-left text-[15px] leading-[1.9] transition hover:-translate-y-0.5 hover:border-brand-300"
+      :class="opened.has(i) ? 'border-emerald-400' : 'border-line'"
       @click="toggle(i)"
     >
-      <span class="block font-bold text-slate-900">😱 {{ st.title }}</span>
-      <span class="block mt-1 text-slate-600">{{ st.story }}</span>
+      <span class="flex items-center gap-3 text-[16px] font-bold">
+        <span class="flex size-10 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
+          <AppIcon name="alert" :size="20" />
+        </span>
+        {{ st.title }}
+      </span>
+      <span class="mt-4 block text-ink/70">{{ st.story }}</span>
       <span
         v-if="opened.has(i)"
-        class="block mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-emerald-900"
+        class="rise-in mt-5 flex gap-3 rounded-2xl bg-emerald-50 px-5 py-4 text-emerald-950"
       >
-        → {{ st.lesson }}
+        <AppIcon name="shield" :size="20" class="mt-1 text-emerald-600" />
+        {{ st.lesson }}
       </span>
-      <span v-else class="block mt-3 text-xs text-brand-600">どうすれば防げる？（クリック）</span>
+      <span v-else class="mt-5 flex items-center gap-2 text-sm font-bold text-brand-600">
+        どうすれば防げる？
+        <AppIcon
+          name="arrowRight"
+          :size="15"
+          :stroke="2"
+          class="transition group-hover:translate-x-1"
+        />
+      </span>
     </button>
   </div>
 
@@ -80,6 +99,6 @@ function toggle(i: number) {
 
   <CalloutBox tone="info" title="リリースのたびにビクビクしなくてよくなる">
     CI/CD
-    の目的は楽をすることだけではありません。「テストに通ったものだけが出ていく」安心感があるから、小さく頻繁にリリースできるようになります。
+    の目的は楽をすることだけではありません。「チェックに通ったものだけが出ていく」安心感があるから、小さく頻繁にリリースできるようになります。
   </CalloutBox>
 </template>
