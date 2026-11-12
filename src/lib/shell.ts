@@ -730,7 +730,8 @@ function respond(
 
 /** 状態から「次に試すとよいコマンド」を出す */
 export function suggest(s: ShellState): string[] {
-  if (!s.cloned) return ["git clone https://github.com/YOUR_ORG/hono-workers-template.git my-api"];
+  if (!s.cloned)
+    return ["git clone https://github.com/your-username/hono-workers-template.git my-api"];
   if (s.cwd === "~") return ["cd my-api"];
   if (!s.installed) return ["npm install", "ls"];
   const list: string[] = [];

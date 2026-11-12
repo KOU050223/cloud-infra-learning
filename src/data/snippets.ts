@@ -3,10 +3,9 @@
  * GitHub Actions の `${{ }}` が Vue テンプレートの補間と衝突するため、文字列としてここに置く。
  */
 
-/** TODO: 共通テンプレートのリポジトリを作成したら差し替える */
-export const TEMPLATE_REPO = "https://github.com/YOUR_ORG/hono-workers-template";
+export const TEMPLATE_REPO = "https://github.com/KOU050223/hono-workers-template";
 
-export const cloneTemplate = `git clone ${TEMPLATE_REPO}.git my-api
+export const cloneTemplate = `git clone https://github.com/<あなたのGitHubユーザー名>/hono-workers-template.git my-api
 cd my-api
 npm install`;
 

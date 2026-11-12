@@ -55,13 +55,9 @@ const progress = useProgressStore();
     why="GitHub Actions はリポジトリの中のワークフローを読んで動くため。"
   >
     <p>
-      GitHub で空のリポジトリを作成し、表示された手順で第1回のプロジェクトを push します。
-      <template v-if="progress.projectMode === 'template'">
-        テンプレートを clone した場合は、<code
-          >git remote set-url origin &lt;新しいリポジトリのURL&gt;</code
-        >
-        で push 先を自分のリポジトリに変えてください。
-      </template>
+      テンプレートを使った場合は、第1回でフォークして clone した自分のリポジトリを使います。
+      持ち込みプロジェクトの場合は、GitHub で空のリポジトリを作り、表示された手順で push
+      してください。
     </p>
     <DashLink brand="github" :href="links.ghNewRepo" :path="['GitHub', 'New repository']" />
     <p>

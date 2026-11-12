@@ -35,7 +35,19 @@ const progress = useProgressStore();
     why="公開する API のコードを手元に置くため。"
   >
     <template v-if="progress.projectMode === 'template'">
-      <p>共通テンプレートを clone して、依存パッケージをインストールします。</p>
+      <p>
+        まず GitHub にログインし、<a
+          :href="s.TEMPLATE_REPO"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Hono API テンプレート</a
+        >を開きます。右上の <strong>Fork</strong> →
+        <strong>Create fork</strong> を押して、自分のアカウントにコピーします。
+      </p>
+      <p>
+        作成した自分のリポジトリの <strong>Code</strong> → <strong>HTTPS</strong> から URL
+        をコピーし、下のユーザー名部分を自分のものに置き換えて実行します。
+      </p>
       <CodeBlock :code="s.cloneTemplate" />
     </template>
     <template v-else>
