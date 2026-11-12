@@ -93,14 +93,18 @@ function confirmReset() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-[60rem] px-10 pt-20 pb-28">
+  <div class="mx-auto max-w-[60rem] px-4 pt-8 sm:px-10 sm:pt-20 pb-28">
     <!-- ヒーロー -->
-    <section class="stage grid items-center gap-6 px-12 pt-14 pb-12 lg:grid-cols-[1fr_300px]">
+    <section
+      class="stage grid items-center gap-6 px-6 pt-9 pb-9 sm:px-12 sm:pt-14 sm:pb-12 lg:grid-cols-[1fr_300px]"
+    >
       <div>
         <p class="relative text-sm font-bold tracking-wide text-signal">
           90分 × 2回の講座 ＋ 自習用サイト
         </p>
-        <h1 class="relative mt-5 text-[2.5rem] leading-[1.45] font-bold text-white">
+        <h1
+          class="relative mt-5 text-[1.8rem] sm:text-[2.5rem] leading-[1.45] font-bold text-white"
+        >
           クラウドの仕組みを<br />見て、触って、<br />自分の API を公開しよう
         </h1>
         <p class="relative mt-7 max-w-[30rem] text-[15.5px] leading-[2] text-white/70">
@@ -351,7 +355,7 @@ function confirmReset() {
     </section>
 
     <!-- 準備 -->
-    <section class="mt-24 rounded-3xl bg-amber-50/80 px-10 py-9">
+    <section class="mt-24 rounded-3xl bg-amber-50/80 px-6 py-9 sm:px-10">
       <h2 class="flex items-center gap-3 text-lg font-bold text-amber-950">
         <AppIcon name="terminal" :size="22" class="text-amber-700" />講座の前に準備しておくもの
       </h2>

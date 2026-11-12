@@ -71,7 +71,7 @@ function completeAndNext() {
 <template>
   <article
     v-if="lesson"
-    class="mx-auto max-w-[46rem] px-8 lg:px-0"
+    class="mx-auto max-w-[46rem] px-5 sm:px-8 lg:px-0"
     :class="slideMode ? 'pt-10 pb-44' : 'pt-20 pb-24'"
   >
     <!-- 表示の切り替え -->
@@ -115,7 +115,7 @@ function completeAndNext() {
       <div class="mt-8 font-display text-6xl leading-none font-bold text-brand-500/90">
         {{ lesson.id }}
       </div>
-      <h1 class="mt-5 text-[2.1rem] leading-[1.4] font-bold text-ink">
+      <h1 class="mt-5 text-[1.75rem] sm:text-[2.1rem] leading-[1.4] font-bold text-ink">
         {{ lesson.title }}
       </h1>
       <div class="mt-6 flex flex-wrap gap-2.5 text-[13px]">

@@ -11,9 +11,9 @@ const entries = Object.entries(glossary).map(([id, e]) => ({
 </script>
 
 <template>
-  <div class="mx-auto max-w-[46rem] px-8 pt-20 pb-28 lg:px-0">
+  <div class="mx-auto max-w-[46rem] px-5 sm:px-8 pt-20 pb-28 lg:px-0">
     <div class="font-display text-xs font-bold tracking-[0.2em] text-brand-600">GLOSSARY</div>
-    <h1 class="mt-3 text-[2.1rem] font-bold">用語集</h1>
+    <h1 class="mt-3 text-[1.75rem] sm:text-[2.1rem] font-bold">用語集</h1>
     <p class="mt-6 text-[16px] leading-[2] text-ink/70">
       レッスン中の点線の付いた用語を、まとめて見られます。関係の深いレッスンから順に並べています。
     </p>

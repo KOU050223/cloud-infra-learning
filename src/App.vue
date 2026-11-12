@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, watch } from "vue";
 import { RouterLink, RouterView, useRoute } from "vue-router";
 import { kindLabel, sessions } from "./data/course";
 import AppIcon from "./components/icons/AppIcon.vue";
@@ -6,13 +7,47 @@ import { useProgressStore } from "./stores/progress";
 
 const progress = useProgressStore();
 const route = useRoute();
+const menuOpen = ref(false);
+watch(
+  () => route.fullPath,
+  () => {
+    menuOpen.value = false;
+  },
+);
 </script>
 
 <template>
-  <div class="flex min-h-screen">
+  <div class="min-h-screen md:flex" @keydown.esc="menuOpen = false">
+    <header
+      v-if="!(progress.slideMode && route.name === 'lesson')"
+      class="sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-white/95 px-4 py-3 backdrop-blur md:hidden"
+    >
+      <button
+        type="button"
+        class="flex size-11 items-center justify-center rounded-xl border border-line text-ink"
+        :aria-expanded="menuOpen"
+        aria-controls="course-navigation"
+        :aria-label="menuOpen ? 'メニューを閉じる' : 'メニューを開く'"
+        @click="menuOpen = !menuOpen"
+      >
+        <span aria-hidden="true" class="text-2xl leading-none">{{ menuOpen ? "×" : "☰" }}</span>
+      </button>
+      <RouterLink to="/" class="text-sm font-bold" @click="menuOpen = false"
+        >クラウドインフラ入門</RouterLink
+      >
+    </header>
+    <button
+      v-if="menuOpen"
+      type="button"
+      class="fixed inset-0 z-40 bg-ink/50 md:hidden"
+      aria-label="メニューを閉じる"
+      @click="menuOpen = false"
+    />
     <aside
       v-show="!(progress.slideMode && route.name === 'lesson')"
-      class="sticky top-0 flex h-screen w-[19rem] shrink-0 flex-col border-r border-line bg-white/70 backdrop-blur"
+      id="course-navigation"
+      class="course-sidebar fixed inset-y-0 left-0 z-50 flex h-dvh w-[min(19rem,85vw)] shrink-0 flex-col border-r border-line bg-white shadow-xl transition-transform duration-200 md:sticky md:top-0 md:h-screen md:w-[19rem] md:translate-x-0 md:bg-white/70 md:shadow-none md:backdrop-blur"
+      :class="menuOpen ? 'translate-x-0' : 'invisible -translate-x-full md:visible'"
     >
       <RouterLink to="/" class="group flex items-center gap-3.5 px-7 pt-8 pb-7">
         <span
@@ -46,7 +81,7 @@ const route = useRoute();
         </div>
       </div>
 
-      <nav class="flex-1 overflow-y-auto px-4 pb-10">
+      <nav class="flex-1 overflow-y-auto px-4 pb-10" @click="menuOpen = false">
         <div v-for="s in sessions" :key="s.id" class="mb-8">
           <div class="px-3 pb-3 text-[11px] font-bold tracking-[0.18em] text-ink/35">
             SESSION {{ s.id }}
@@ -94,6 +129,7 @@ const route = useRoute();
 
       <RouterLink
         to="/glossary"
+        @click="menuOpen = false"
         class="mx-4 mb-5 flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14px] transition"
         :class="route.name === 'glossary' ? 'bg-ink text-white' : 'text-ink/70 hover:bg-ink/[0.04]'"
       >
