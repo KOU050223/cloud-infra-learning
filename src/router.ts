@@ -15,5 +15,13 @@ export const router = createRouter({
     { path: "/complete", name: "complete", component: () => import("./views/CompleteView.vue") },
     { path: "/:pathMatch(.*)*", redirect: "/" },
   ],
-  scrollBehavior: () => ({ top: 0 }),
+  scrollBehavior: (to) => {
+    if (!to.hash) return { top: 0 };
+    // レッスン本文は遅れて読み込まれるので、見出しが現れるのを少し待ってから移動する
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(document.querySelector(to.hash) ? { el: to.hash, top: 96 } : { top: 0 });
+      }, 300);
+    });
+  },
 });

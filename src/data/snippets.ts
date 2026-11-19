@@ -174,3 +174,17 @@ export const testFailureLog = `- Expected
 -   "message": "Hello, taro!",
 +   "message": "Hi, taro!",
   }`;
+
+/** 第2回の前に：Git の名前とメールアドレスを確認・設定する */
+export const gitConfigCheck = `git config --global user.name
+git config --global user.email
+# 何も表示されなければ設定する（GitHub に登録した名前とメールアドレス）
+git config --global user.name "<あなたの名前>"
+git config --global user.email "<あなたのメールアドレス>"`;
+
+/** 第2回の前に：GitHub へ push できるかを試す */
+export const gitPushRehearsal = `cd my-api
+git remote -v          # origin が自分の GitHub リポジトリになっているか
+git status             # 変更が残っていないか
+git commit --allow-empty -m "chore: push の練習"
+git push origin main`;

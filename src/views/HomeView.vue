@@ -402,6 +402,17 @@ function confirmReset() {
       <h2 class="mt-3 text-2xl font-bold">{{ s.title }}</h2>
       <p class="mt-2 text-[15px] font-bold text-brand-600">第{{ s.id }}章 {{ s.chapter.title }}</p>
       <p class="mt-3 text-[15px] text-ink/55">成果物：{{ s.deliverable }}</p>
+      <RouterLink
+        v-if="s.id === 2"
+        :to="{ path: '/lessons/06', hash: '#before-session2' }"
+        class="mt-5 flex items-center gap-3 rounded-2xl bg-amber-50/80 px-5 py-4 text-[15px] text-amber-950 transition hover:bg-amber-100/80"
+      >
+        <AppIcon name="checkCircle" :size="20" class="shrink-0 text-amber-700" />
+        <span class="flex-1"
+          ><strong>始まる前に：</strong>第2回までに済ませておくこと（push の確認など）</span
+        >
+        <AppIcon name="arrowRight" :size="16" :stroke="2" class="shrink-0 text-amber-700/60" />
+      </RouterLink>
       <ol class="mt-8 space-y-3">
         <li v-for="l in s.lessons" :key="l.id">
           <RouterLink
