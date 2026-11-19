@@ -77,7 +77,8 @@ const progress = useProgressStore();
     <ol>
       <li>
         Cloudflare ダッシュボード右上のアイコン →
-        <strong>My Profile → API Tokens</strong> を開き、<strong>Create Token</strong> を押す
+        <strong>My Profile → API Tokens</strong> を開き、<strong>Create Token</strong>
+        （トークンを作成）を押す
         <DashLink
           brand="cloudflare"
           :href="links.cfApiTokens"
@@ -85,12 +86,43 @@ const progress = useProgressStore();
         />
       </li>
       <li>
-        テンプレート
-        <strong>「Edit Cloudflare Workers」</strong> を選び、自分のアカウントを指定して作成
+        テンプレート一覧から
+        <strong>「Edit Cloudflare Workers」</strong>（Cloudflare Workers を編集）の
+        <strong>Use template</strong> を押す
       </li>
-      <li>表示されたトークンをコピー（<strong>一度しか表示されない</strong>）</li>
-      <li>アカウント ID は次のコマンドで確認できます</li>
+      <li>
+        <strong>トークン名</strong>を入れる。あとで後片付けするときに見分けられるよう、
+        <code>hono-workers-template api token</code> のように何に使うかがわかる名前にする
+      </li>
+      <li>
+        <strong>アカウントポリシー</strong
+        >：「含む」の右の欄で<strong>自分のアカウント</strong>を選ぶ
+      </li>
+      <li>
+        <strong>ゾーンポリシー</strong
+        >：「含む」の右の欄で範囲を選ぶ。独自ドメインを持っていない人は
+        <strong>「アカウントのすべてのゾーン」</strong>を選び、さらに右の欄で自分のアカウントを選ぶ
+        （「特定のゾーン」はドメインを持っていないと候補が出ない）
+      </li>
+      <li>
+        どちらのポリシーも空欄のままだと先に進めません。埋めたら
+        <strong>Continue to summary</strong>（概要に進む）→ <strong>Create Token</strong> を押す
+      </li>
+      <li>
+        作成完了の画面に出たトークンを、右のボタンでコピーする（<strong>この画面を閉じると二度と表示されない</strong>）
+      </li>
     </ol>
+    <figure class="not-prose my-8">
+      <img
+        src="/examples/cloudflare/api-token-created.webp"
+        alt="Cloudflare の「API トークンが正常に作成されました」画面。API トークンの欄と、curl で確認する使用例が表示されている"
+        loading="lazy"
+        class="w-full rounded-2xl shadow-[0_0_0_1px_var(--color-line)]"
+      />
+      <figcaption class="mt-3 text-center text-[13px] text-ink/55">
+        作成完了の画面。トークンは「トークンを今すぐコピーしてください」の上の欄に出る（画像では伏せています）
+      </figcaption>
+    </figure>
     <p>
       トークンは、パスワードと同じように扱います。<SideNote tone="warn" title="漏れたときは"
         >このテンプレートのトークンは、Workers
@@ -98,6 +130,7 @@ const progress = useProgressStore();
         API Tokens のページですぐに削除します。</SideNote
       >
     </p>
+    <p>アカウント ID は次のコマンドで確認できます。</p>
     <CodeBlock :code="s.whoami" />
     <template #check>
       <CheckItem id="h10-token" label="API トークンとアカウントIDを手元に用意した" />
@@ -170,7 +203,21 @@ const progress = useProgressStore();
           <Term id="npmCi"><code>npm ci</code></Term> で失敗 →
           <code>package-lock.json</code> がコミットされているか確認
         </li>
+        <li>
+          ログに <code>Uploaded</code> と出たあと、<code
+            >This Worker does not exist on your account. [code: 10007]</code
+          >
+          で失敗 → その Worker 名での<strong>初めてのデプロイ</strong>のときに起きる一時的なエラー。
+          作ったばかりの Worker が Cloudflare 側にまだ反映されておらず、Wrangler
+          がその情報を取りに行って失敗しています。コードは直さず、失敗した実行の画面右上の
+          <strong>Re-run jobs → Re-run failed jobs</strong> で再実行すれば通ります。2回目以降の push
+          では起きません
+        </li>
       </ul>
+      <p class="text-sm">
+        ログに <code>Node.js 20 actions are deprecated</code>
+        という警告が出ることがありますが、ワークフローは動くので気にしなくて大丈夫です。
+      </p>
     </template>
     <template #check>
       <CheckItem id="h10-cd" label="push だけで自動デプロイされた" />
